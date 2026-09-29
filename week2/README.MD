@@ -33,4 +33,53 @@ F1-Score	        98.61%	96.55%
 
 
 Quiz2
+1. 超參數設定
 
+本實驗使用 MLP 進行信用卡違約預測，模型架構及超參數如下：
+
+項目	            設定
+Epoch	            50
+Batch Size	        32
+Learning Rate	    0.001
+Optimizer	        Adam
+Loss Function	    Binary Crossentropy
+Hidden Layer	    2 層
+Neuron 數量	        64 → 32
+Activation Function	ReLU
+Output	            1 Neuron + Sigmoid
+Dropout	            0.3（改善模型）
+
+23 Features → 64 → 32 → 1
+23 Features → 64 → Dropout(0.3) → 32 → Dropout(0.3) → 1
+
+2. 模型改善前後比較
+2.1 Training / Validation 結果
+指標	原始 MLP	Dropout MLP
+Training Loss	0.3864	0.4235
+Validation Loss	0.4599	0.4351
+Training Accuracy	83.42%	82.15%
+Validation Accuracy	80.65%	81.92%
+
+加入 Dropout 後，Training Loss 上升，但 Validation Loss 由 0.4599 降至 0.4351；Validation Accuracy 則由 80.65% 提升至 81.92%。
+
+Training Accuracy 與 Validation Accuracy 的差距：
+
+原始 MLP：83.42% − 80.65% = 2.77%
+Dropout MLP：82.15% − 81.92% = 0.23%
+
+因此可以觀察到，加入 Dropout 後 Training 與 Validation 的表現差距縮小，過擬合現象有所改善，模型在 Validation Dataset 上的表現也較穩定。
+
+2.2 Classification Metrics
+指標	原始 MLP	Dropout MLP
+Accuracy	80.65%	81.92%
+Precision	59.98%	68.06%
+Recall	37.60%	34.36%
+F1-Score	46.23%	45.67%
+
+加入 Dropout 後，Accuracy 與 Precision 提升，但 Recall 與 F1-Score 略微下降。因此 Dropout 並非讓所有評估指標都提升，而是在降低過擬合的同時，使不同指標之間產生不同的變化。
+另外，進一步測試 Classification Threshold 後，Threshold = 0.30 時：
+Accuracy  = 79.58%
+Precision = 53.99%
+Recall    = 52.00%
+F1-Score  = 52.98%
+相較於 Dropout 模型原本 Threshold = 0.5 的 F1-Score 45.67%，提升至 52.98%，顯示 Threshold 的選擇會明顯影響 Precision、Recall 與 F1-Score。
